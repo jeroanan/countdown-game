@@ -124,6 +124,10 @@ function App(props) {
     setWords([]);
   }
 
+  const handleGiveUp = () => {
+    setSecondsLeft(0);
+  }
+
   const handleEnteredWordChange = (e) => {
     setEnteredWord(e.target.value);
   }
@@ -161,22 +165,35 @@ function App(props) {
 
   return(
     <>
-      <form onSubmit={handleSubmit} disabled={gameOver}>
-        <p>
-          <TimeLeft timeLeft={secondsLeft} gameOverText={getGameOverText()} />
-        </p>
-        <p>
-          {letterTiles}
-        </p>
-        <p>
-          <input type="text" value={enteredWord} onChange={handleEnteredWordChange} disabled={gameOver} />
-          <input type="submit" value="Enter" disabled={gameOver} />
-        </p>
-        <p>
-          <button onClick={handleReset}>Reset</button>
-        </p>
-        <TriedWords words={words} />
-	    </form>
+      <div className="app">
+        <form onSubmit={handleSubmit} disabled={gameOver}>
+
+          <div className="letters">
+            <div className="inner">
+              {letterTiles}
+            </div>
+          </div>
+
+          <div className="timeleft"> 
+            <TimeLeft timeLeft={secondsLeft} gameOverText={getGameOverText()} />
+          </div>
+
+          <div className="words">
+            <div className="input">
+              <input className="word" type="text" value={enteredWord} onChange={handleEnteredWordChange} disabled={gameOver} />
+              <input type="submit" value="Enter" disabled={gameOver} />
+            </div>
+            <div className="triedWords">
+              <p><strong>Entered words</strong></p>
+              <TriedWords words={words} />
+            </div>
+          </div>
+          <div className="extra">
+            <button onClick={handleReset}>Reset</button>
+            <button onClick={handleGiveUp}>Give Up</button>
+          </div>
+        </form>
+      </div>  
     </>
   );
 }
@@ -197,7 +214,7 @@ function TriedWords(props) {
 
   return (
     <>
-      <ul>
+      <ul className="triedWords">
         {triedWords}
 	    </ul>
     </>
@@ -209,7 +226,11 @@ function Letter(props) {
   const theLetter = props.letter;
 
   return (
-    <span>{theLetter}</span>
+    <>
+      <div className="letter">
+        <span className="letter">{theLetter}</span>
+      </div>
+    </>
   );
 }
 
