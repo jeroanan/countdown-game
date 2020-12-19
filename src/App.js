@@ -6,10 +6,13 @@ function App(props) {
     const numberOfTiles = 9;
     const maxConsonants = 5;
     const maxVowels = 5;
-    const gameLengthSeconds = 60;
+    const gameLengthSeconds = 5;
 
     const [secondsLeft, setSecondsLeft] = useState(gameLengthSeconds);
     const [letters, setLetters] = useState([]);
+    const [enteredWord, setEnteredWord] = useState("");
+    const [words, setWords] = useState([]);
+    const [gameOver, setGameOver] = useState(false);
     
     const isVowel = (l) =>
     {
@@ -47,6 +50,8 @@ function App(props) {
     const tickDown = () => {
 	if (secondsLeft>0) {
 	    setSecondsLeft(secondsLeft-1);
+	} else {
+	    setGameOver(true);
 	}
     }
 
@@ -59,32 +64,57 @@ function App(props) {
 
     const handleReset = () => {
 	generateLetters();
+	setGameOver(false);
 	setSecondsLeft(gameLengthSeconds);
+	setWords([]);
+    }
+
+    const handleEnteredWordChange = (e) => {
+	setEnteredWord(e.target.value);
+    }
+
+    const handleSubmit = (e) => {
+	e.preventDefault();
+	const w = enteredWord.trim();
+	if (w==='') {
+	    return;
+	}
+
+	let someWords = words.slice();
+	setWords(someWords.concat(w));
+	setEnteredWord('');
     }
 
     if (letters.length===0) {
 	generateLetters();
     }
 
-    const letterTiles = []
+    const letterTiles = letters.map((l,i) => {
+	return <Letter key={i} letter={l} />
+    });
 
-    let i = 1;
-    for (let l of letters) {
-	i++;
-	letterTiles.push(<Letter key={i} letter={l} />);
-    }
+    const getGameOverText = () => {
+	return 'Game Over';
+    };
 
     return(
 	<>
+	    <form onSubmit={handleSubmit} disabled={gameOver}>
 	    <p>
-		<TimeLeft timeLeft={secondsLeft} />
+		<TimeLeft timeLeft={secondsLeft} gameOverText={getGameOverText()} />
             </p>
 	    <p>
 		{letterTiles}
 	    </p>
 	    <p>
+		    <input type="text" onChange={handleEnteredWordChange} disabled={gameOver} />
+		    <input type="submit" value="Enter" disabled={gameOver} />
+	    </p>
+	    <p>
 		<button onClick={handleReset}>Reset</button>
 	    </p>
+	    <TriedWords words={words} />
+	    </form>
 	</>
     );
 }
@@ -93,7 +123,22 @@ function TimeLeft(props) {
     const timeLeft = props.timeLeft;
     return (
 	<>
-	    {timeLeft>0 ? <span>Time left: {props.timeLeft}</span> : <span>Game Over</span>}
+	    {timeLeft>0 ? <span>Time left: {props.timeLeft}</span> : <span>{props.gameOverText}</span>}
+	</>
+    );
+}
+
+function TriedWords(props) {
+    const triedWords = props.words.map((x,i) => {
+	return <li key={i}>{x}</li>;
+    });
+
+    return (
+	<>
+	    <ul>
+		{triedWords}
+	    </ul>
+		
 	</>
     );
 }
