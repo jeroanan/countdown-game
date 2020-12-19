@@ -60,6 +60,11 @@ function App(props) {
   }
 
   const canMakeWord = (word, letters) => {
+
+    if (words.filter((x) => x.toUpperCase()===word.toUpperCase()).length>0) {
+      return false;
+    }
+
     const theWord = word.toUpperCase();
 
     if (Words.indexOf(theWord)===-1) {
@@ -111,6 +116,7 @@ function App(props) {
   }
 
   useEffect(() => {
+    document.title = 'Countdown word game';
     const timer = setTimeout(() => {
         tickDown();
     }, 1000);
@@ -159,8 +165,9 @@ function App(props) {
 
   const getGameOverText = () => {
     const orderedWords = words.slice().sort((x,y) => x.length-y.length);
-    const highScore = orderedWords.pop()?.length;
-    return `Game Over. Highest score: ${highScore}`;
+    let highScore = orderedWords.slice().pop()?.length;
+    highScore = highScore ? highScore : 0;
+    return `Game Over. Highest score: ${highScore}. Number of words: ${orderedWords.length}`;
   };
 
   return(
