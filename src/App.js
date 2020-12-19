@@ -87,7 +87,7 @@ function App(props) {
             if (j === 0) {
               someLetters = someLetters.slice(1);
             } else {
-              someLetters = someLetters.slice(0, j-1).concat(someLetters.slice(j+1));
+              someLetters = someLetters.slice(0, j).concat(someLetters.slice(j+1));
             }
             break;
           }
@@ -154,7 +154,9 @@ function App(props) {
   });
 
   const getGameOverText = () => {
-    return 'Game Over';
+    const orderedWords = words.slice().sort((x,y) => x.length-y.length);
+    const highScore = orderedWords.pop()?.length;
+    return `Game Over. Highest score: ${highScore}`;
   };
 
   return(
