@@ -1,36 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 
-class App extends React.Component {
-    constructor(props) {
-	super(props);
+function App(props) {
 
-	const maxConsonants = 5;
-	const maxVowels = 5;
-	const numberOfTiles = 9;
-	let letters = [];
+    const numberOfTiles = 9;
+    const letters = [];
+    const maxConsonants = 5;
+    const maxVowels = 5;
 
-	for (let i=0; i<numberOfTiles; i++) {
-	    letters.push(this.getRandomLetter(letters, maxConsonants, maxVowels));
-	}
-	
-	this.state = {
-	    letters: letters,
-	    vowels: 0,
-	    consonants: 0,
-	    maxConsonants: 5,
-	    maxVowels: 5,
-	}
-    }
-
-    isVowel(l)
+    const isVowel = (l) =>
     {
 	const vowels = ['A', 'E', 'I', 'O', 'U'];
 	return vowels.indexOf(l) > -1;
     }
 
-    getRandomLetter(ls, maxConsonants, maxVowels) {
+    const getRandomLetter = (ls, maxConsonants, maxVowels) => {
 
 	while (true) {
 	    const aCharCode = 65;
@@ -38,32 +22,35 @@ class App extends React.Component {
 
 	    const l = String.fromCharCode(aCharCode + r);
 
-	    const vowelsSoFar = ls.filter((x) => this.isVowel(x)).length;
-	    const consonantsSoFar = ls.filter((x) => !this.isVowel(x)).length;
+	    const vowelsSoFar = ls.filter((x) => isVowel(x)).length;
+	    const consonantsSoFar = ls.filter((x) => !isVowel(x)).length;
 
-	    if ((!this.isVowel(l)) && (consonantsSoFar < maxConsonants)) {
+	    if ((!isVowel(l)) && (consonantsSoFar < maxConsonants)) {
 		return l;
-	    } else if (this.isVowel(l) && (vowelsSoFar < maxVowels)) {
+	    } else if (isVowel(l) && (vowelsSoFar < maxVowels)) {
 		return l;
 	    }
 	}
     }
 
-    render() {
-	const letters = []
-	let i = 1;
-	for (let l of this.state.letters) {
-	    i++;
-	    letters.push(<Letter key={i} letter={l} />);
-	}
-
-	return(
-	    <>
-	    {letters}
-		</>
-	);
+    for (let i=0; i<numberOfTiles; i++) {
+	letters.push(getRandomLetter(letters, maxConsonants, maxVowels));
     }
 
+
+    const letterTiles = []
+
+    let i = 1;
+    for (let l of letters) {
+	i++;
+	letterTiles.push(<Letter key={i} letter={l} />);
+    }
+
+    return(
+	<>
+	{letterTiles}
+	    </>
+    );
 }
 
 function Letter(props) {
