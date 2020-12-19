@@ -6,7 +6,7 @@ function App(props) {
     const numberOfTiles = 9;
     const maxConsonants = 5;
     const maxVowels = 5;
-    const gameLengthSeconds = 5;
+    const gameLengthSeconds = 60;
 
     const [secondsLeft, setSecondsLeft] = useState(gameLengthSeconds);
     const [letters, setLetters] = useState([]);
@@ -47,6 +47,52 @@ function App(props) {
 	setLetters(someLetters);
     }
 
+    const stringToArray = (w) => {
+	const a = [];
+
+	for (let i=0; i<w.length; i++) {
+	    a.push(w[i]);
+	}
+
+	return a;
+    }
+
+    const canMakeWord = (word, letters) => {
+	const wordArray = stringToArray(word);
+	let someLetters = letters.slice();
+
+	for (let i=0; i<wordArray.length; i++) {
+
+	    const thisLetter = wordArray[i].toUpperCase();
+	    const index = someLetters.indexOf(thisLetter);
+	    
+	    let foundMatch = false;
+
+	    if (index === -1) {
+		return false;
+	    }
+
+	    for (let j=0; j<someLetters.length; j++) {
+		if (thisLetter === someLetters[j]) {
+		    foundMatch = true;
+
+		    if (j === 0) {
+			someLetters = someLetters.slice(1);
+		    } else {
+			someLetters = someLetters.slice(0, j-1).concat(someLetters.slice(j+1));
+		    }
+		    break;
+		}
+	    }
+
+	    if (!foundMatch) {
+		return false;
+	    }
+	}
+
+	return true;
+    }
+
     const tickDown = () => {
 	if (secondsLeft>0) {
 	    setSecondsLeft(secondsLeft-1);
@@ -76,7 +122,12 @@ function App(props) {
     const handleSubmit = (e) => {
 	e.preventDefault();
 	const w = enteredWord.trim();
+
 	if (w==='') {
+	    return;
+	}
+
+	if (!canMakeWord(w, letters)) {
 	    return;
 	}
 
@@ -107,7 +158,7 @@ function App(props) {
 		{letterTiles}
 	    </p>
 	    <p>
-		    <input type="text" onChange={handleEnteredWordChange} disabled={gameOver} />
+		    <input type="text" value={enteredWord} onChange={handleEnteredWordChange} disabled={gameOver} />
 		    <input type="submit" value="Enter" disabled={gameOver} />
 	    </p>
 	    <p>
