@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
+import Words from './words.js';
 
 function App(props) {
 
@@ -59,12 +60,18 @@ function App(props) {
   }
 
   const canMakeWord = (word, letters) => {
-    const wordArray = stringToArray(word);
+    const theWord = word.toUpperCase();
+
+    if (Words.indexOf(theWord)===-1) {
+      return false;
+    }
+
+    const wordArray = stringToArray(theWord);
     let someLetters = letters.slice();
 
     for (let i=0; i<wordArray.length; i++) {
 
-        const thisLetter = wordArray[i].toUpperCase();
+        const thisLetter = wordArray[i];
         const index = someLetters.indexOf(thisLetter);
         
         let foundMatch = false;
